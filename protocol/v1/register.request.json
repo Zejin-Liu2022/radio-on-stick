@@ -1,0 +1,15 @@
+{
+  "station": {
+    "protocol": "radio-station/1",
+    "station_id": "st_7f5c2c1e",
+    "name": "猫娘电台",
+    "public_key": "ed25519:base64url...",
+    "capabilities": ["join", "mesh", "p2p"],
+    "connectivity": ["direct"],
+    "endpoints": [{"kind": "direct", "url": "https://station.example"}],
+    "issued_at": "2026-11-18T00:00:00Z",
+    "signature": "ed25519:base64url..."
+  },
+  "invite_hashes": ["sha256:base64url..."],
+  "directory_token": "optional"
+}

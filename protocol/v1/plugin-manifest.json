@@ -1,0 +1,15 @@
+{
+  "protocol": "radio-plugin/1",
+  "id": "bilibili",
+  "name": "哔哩哔哩",
+  "version": "1.0.0",
+  "kind": "commercial",
+  "entry": {
+    "command": "./radio-plugin-bilibili",
+    "args": ["--stdio"]
+  },
+  "capabilities": ["search", "resolve", "lyrics"],
+  "permissions": ["network"],
+  "public_only": true,
+  "signature": "ed25519:base64url..."
+}

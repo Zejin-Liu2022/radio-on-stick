@@ -34,6 +34,10 @@
 - Nginx 提供 HTTP/HTTPS（自签名证书，可替换）
 - PWA 清单与 Service Worker，为打包 WebView/Tauri/Capacitor/BeeWare APP 预留；客户端默认可作为 WebRTC 中继/种子；详见 `docs/APP.md`
 - 公网开放检查清单见 `docs/PUBLIC.md`
+- 产品架构、统一加入入口与邀请码协议见 `docs/ARCHITECTURE.md`、`docs/JOIN_PROTOCOL.md`
+- 插件协议（本地库/开放平台/商业平台）见 `docs/PLUGIN_PROTOCOL.md`
+- NAT 后电台的统一入口 Relay 协议见 `docs/RELAY_PROTOCOL.md`
+- 协议 JSON 示例见 `protocol/v1/`
 - 校园网络、证书、隧道等私人部署说明见 `docs/PRIVATE_CONFIG.md`
 - `/admin` 复用客户端完整播放/歌词/聊天/点歌布局，并额外提供任意曲目删除、MP3 策略、最大听众/功能开关和留言管理；网络 IP 准入统一由 Nginx 白名单负责
 - 网络准入参考 [Pigman02/radio-on-stick](https://github.com/Pigman02/radio-on-stick)：Nginx 白名单放行本机、Tailscale 和 RFC1918 私网；白名单文件独立保存，升级不覆盖

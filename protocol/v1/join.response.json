@@ -1,0 +1,24 @@
+{
+  "protocol": "radio-join/1",
+  "session": "base64url...",
+  "role": "listener",
+  "station": {
+    "protocol": "radio-station/1",
+    "station_id": "st_7f5c2c1e",
+    "name": "猫娘电台",
+    "public_key": "ed25519:base64url...",
+    "capabilities": ["join", "mesh", "p2p"],
+    "connectivity": ["direct"],
+    "endpoints": [{"kind": "direct", "url": "https://station.example"}],
+    "issued_at": "2026-11-18T00:00:00Z",
+    "signature": "ed25519:base64url..."
+  },
+  "expires_at": "2026-11-19T00:00:00Z",
+  "mesh": {
+    "enabled": true,
+    "ws_url": "/ws",
+    "manifest_url": "/source/manifest",
+    "chunk_url": "/source/chunk",
+    "stun": ["stun:stun.example.org:3478"]
+  }
+}
