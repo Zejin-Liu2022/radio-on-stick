@@ -115,3 +115,27 @@ Station 启动后会：
 管理员可在管理端「电台目录」复制或轮换邀请码。
 
 注意：这是 Directory 接入 MVP。邀请码在 Directory 层负责定位电台；Station 端强制凭邀请码建立 session 仍属于下一步。
+
+## Go Relay MVP
+
+VPS 上还运行 Go Relay：
+
+```text
+station --TLS:9443--> relay
+Caddy station.example.com -> 127.0.0.1:18081 -> relay -> station
+```
+
+- Station 主动出站连接，不需要公网入站。
+- Relay 使用短期 token 鉴权。
+- 支持 HTTP 和 WebSocket。
+- 保留 `/source`、`/ws`、`/native`。
+- 当前 Relay 使用 Station 证书的副本；证书续期后需要同步 `/etc/radio-relay/tls/`。
+
+Agent：
+
+```text
+RELAY_HOST=station.example.com
+RELAY_PORT=9443
+RELAY_TOKEN=<long-random-token>
+RELAY_LOCAL=127.0.0.1:8080
+```

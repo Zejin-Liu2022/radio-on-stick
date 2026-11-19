@@ -1,0 +1,23 @@
+[Unit]
+Description=Radio NAT Relay
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+User=radio-relay
+Group=radio-relay
+EnvironmentFile=/etc/radio-relay.env
+ExecStart=/opt/radio-relay/radio-relay-server
+Restart=always
+RestartSec=3
+NoNewPrivileges=true
+PrivateTmp=true
+ProtectSystem=strict
+ProtectHome=true
+ReadWritePaths=/var/lib/radio-relay
+LimitNOFILE=8192
+MemoryMax=256M
+
+[Install]
+WantedBy=multi-user.target
