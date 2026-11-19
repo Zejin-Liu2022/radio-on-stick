@@ -97,6 +97,10 @@ class Config:
     max_body_bytes: int = 16 * 1024
     static_cache_sec: int = 3600
     log_level: str = "INFO"
+    directory_url: str = ""
+    directory_register_token: str = ""
+    directory_public_url: str = ""
+    directory_heartbeat_sec: int = 300
 
     @classmethod
     def from_env(cls, env: Mapping[str, str] | None = None) -> "Config":
@@ -185,6 +189,14 @@ class Config:
             max_body_bytes=_int(source, "RADIO_MAX_BODY_BYTES", 16 * 1024),
             static_cache_sec=_int(source, "RADIO_STATIC_CACHE", 3600),
             log_level=_text(source, "RADIO_LOG_LEVEL", "INFO"),
+            directory_url=_text(source, "RADIO_DIRECTORY_URL", "").rstrip("/"),
+            directory_register_token=_text(
+                source, "RADIO_DIRECTORY_REGISTER_TOKEN", ""
+            ),
+            directory_public_url=_text(
+                source, "RADIO_DIRECTORY_PUBLIC_URL", ""
+            ).rstrip("/"),
+            directory_heartbeat_sec=_int(source, "RADIO_DIRECTORY_HEARTBEAT", 300),
         )
 
     @property

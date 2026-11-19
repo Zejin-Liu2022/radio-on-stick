@@ -93,3 +93,25 @@ curl -X POST https://join.example.com/v1/stations \
 - 没有强制 Ed25519 descriptor 验签
 - 单节点，无高可用
 - `sslip.io` 只适合过渡，正式使用自定义域名
+
+## Station 接入
+
+Station 环境文件增加：
+
+```text
+RADIO_DIRECTORY_URL=https://join.example.com
+RADIO_DIRECTORY_REGISTER_TOKEN=<directory register token>
+RADIO_DIRECTORY_PUBLIC_URL=https://station.example
+RADIO_DIRECTORY_HEARTBEAT=300
+```
+
+Station 启动后会：
+
+1. 生成稳定的 `station_id`
+2. 生成邀请码
+3. 把邀请码哈希注册到 Directory
+4. 每 5 分钟心跳
+
+管理员可在管理端「电台目录」复制或轮换邀请码。
+
+注意：这是 Directory 接入 MVP。邀请码在 Directory 层负责定位电台；Station 端强制凭邀请码建立 session 仍属于下一步。

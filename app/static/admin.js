@@ -161,6 +161,7 @@
       ["tracks", "曲目库"],
       ["policy", "准入与格式"],
       ["page", "页面与背景"],
+      ["directory", "电台目录"],
       ["access", "访问与部署"],
       ["messages", "留言"],
     ];
@@ -320,6 +321,7 @@
     renderTracks();
     renderPolicy();
     renderPage();
+    renderDirectory();
     renderAccess();
     renderMessages();
     for (const button of document.querySelectorAll(".admin-console-tab")) {
@@ -405,6 +407,7 @@
     if (state.tab === "tracks") return renderTracks(body);
     if (state.tab === "policy") return renderPolicy(body);
     if (state.tab === "page") return renderPage(body);
+    if (state.tab === "directory") return renderDirectory(body);
     if (state.tab === "access") return renderAccess(body);
     if (state.tab === "messages") return renderMessages(body);
   }
@@ -652,6 +655,69 @@
       gallery.appendChild(thumb);
     }
     wrap.appendChild(gallery);
+    body.appendChild(wrap);
+  }
+
+  function renderDirectory(body = $("adminConsoleBody")) {
+    if (!body) return;
+    if (state.tab !== "directory") return;
+    clear(body);
+    const directory = state.data.directory || {};
+    const wrap = section("公共电台目录", "邀请码只显示给管理员");
+    if (!directory.enabled) {
+      wrap.appendChild(el("p", "admin-note", "Directory 未配置。请由服务器部署者在环境文件中设置 RADIO_DIRECTORY_URL / RADIO_DIRECTORY_REGISTER_TOKEN / RADIO_DIRECTORY_PUBLIC_URL。"));
+      body.appendChild(wrap);
+      return;
+    }
+    const enabled = el("p", "admin-note", directory.registered ? "已注册到 Directory" : "尚未注册成功");
+    wrap.appendChild(enabled);
+    const publicId = el("label", "admin-field");
+    publicId.appendChild(el("span", "", "Station ID"));
+    const publicInput = document.createElement("input");
+    publicInput.value = directory.station_id || "";
+    publicInput.readOnly = true;
+    publicId.appendChild(publicInput);
+    wrap.appendChild(publicId);
+
+    const codeLabel = el("label", "admin-field");
+    codeLabel.appendChild(el("span", "", "当前邀请码"));
+    const codeInput = document.createElement("input");
+    codeInput.value = directory.invite_code || "";
+    codeInput.readOnly = true;
+    codeInput.id = "adminDirectoryInvite";
+    codeLabel.appendChild(codeInput);
+    wrap.appendChild(codeLabel);
+
+    const codeActions = el("div", "admin-console-actions");
+    codeActions.appendChild(button("复制邀请码", "primary-btn", async () => {
+      try {
+        await navigator.clipboard.writeText(codeInput.value);
+        setStatus("live", "邀请码已复制");
+      } catch (_) {
+        codeInput.select();
+      }
+    }));
+    codeActions.appendChild(button("刷新注册", "ghost-btn", async () => {
+      try {
+        await api("/api/admin/directory/refresh", { method: "POST" });
+        setStatus("live", "Directory 已刷新");
+        await loadState(true);
+      } catch (error) { setStatus("offline", errorText(error, "刷新失败")); }
+    }));
+    codeActions.appendChild(button("轮换邀请码", "danger-btn", async () => {
+      if (!window.confirm("轮换后旧邀请码立即失效，继续？")) return;
+      try {
+        await api("/api/admin/directory/rotate", { method: "POST" });
+        setStatus("live", "邀请码已轮换");
+        await loadState(true);
+      } catch (error) { setStatus("offline", errorText(error, "轮换失败")); }
+    }));
+    wrap.appendChild(codeActions);
+
+    if (directory.last_error) {
+      wrap.appendChild(el("p", "admin-note", `最近错误：${directory.last_error}`));
+    }
+    wrap.appendChild(el("p", "admin-note", "邀请码用于 Directory 定位本电台。管理员 token 不会发送到 Directory。"));
     body.appendChild(wrap);
   }
 

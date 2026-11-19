@@ -6,6 +6,7 @@ from dataclasses import dataclass
 from .community import ListenerTracker, VoteTracker
 from .config import Config
 from .db import Database
+from .directory import DirectoryClient
 from .player import Player
 from .ratelimit import RateLimiter
 from .sources.aggregate import TrackAggregator
@@ -29,6 +30,7 @@ class RadioApp:
     listeners: ListenerTracker
     votes: VoteTracker
     request_lock: threading.Lock
+    directory: DirectoryClient | None = None
 
 
 def build_app(
@@ -54,7 +56,8 @@ def build_app(
     aggregator = aggregator or TrackAggregator(db, config, netease, qq, meting)
     limiter = RateLimiter(db, config)
     player = Player(db, aggregator, config)
-    return RadioApp(
+    directory = DirectoryClient(config, db)
+    app = RadioApp(
         config=config,
         db=db,
         http=http,
@@ -67,4 +70,7 @@ def build_app(
         listeners=ListenerTracker(config.listener_ttl_sec),
         votes=VoteTracker(),
         request_lock=threading.Lock(),
+        directory=directory,
     )
+    directory.start()
+    return app

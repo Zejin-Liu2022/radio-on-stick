@@ -166,6 +166,8 @@ class RadioServer(ThreadingHTTPServer):
             self._upload_stop.wait(interval)
 
     def server_close(self) -> None:
+        if self.app.directory is not None:
+            self.app.directory.stop()
         self._upload_stop.set()
         if self._upload_thread.is_alive():
             self._upload_thread.join(timeout=3.0)
@@ -679,9 +681,22 @@ class RadioHandler(BaseHTTPRequestHandler):
                     ),
                     "backgrounds": self._backgrounds(),
                     "policy": load_policy(self.app.db),
+                    "directory": self.app.directory.status(include_code=True)
+                    if self.app.directory is not None
+                    else {"enabled": False},
                     "tracks": self.app.db.list_all_tracks(200),
                 },
             )
+            return
+        if path == "/api/admin/directory":
+            self._require_admin()
+            if self.app.directory is None:
+                self._send_json(200, {"ok": False, "enabled": False})
+            else:
+                self._send_json(
+                    200,
+                    {"ok": True, "directory": self.app.directory.status(include_code=True)},
+                )
             return
         if path == "/api/admin/queue":
             self._require_admin()
@@ -728,6 +743,26 @@ class RadioHandler(BaseHTTPRequestHandler):
 
     def _dispatch_post(self) -> None:
         path = urllib.parse.urlsplit(self.path).path
+        if path == "/api/admin/directory/rotate":
+            self._require_admin()
+            if self.app.directory is None or not self.app.directory.enabled:
+                raise ApiError(503, "directory_disabled", "Directory 未配置")
+            try:
+                status = self.app.directory.rotate_invite()
+            except Exception as exc:
+                raise ApiError(502, "directory_error", str(exc)) from exc
+            self._send_json(200, {"ok": True, "directory": status})
+            return
+        if path == "/api/admin/directory/refresh":
+            self._require_admin()
+            if self.app.directory is None or not self.app.directory.enabled:
+                raise ApiError(503, "directory_disabled", "Directory 未配置")
+            try:
+                status = self.app.directory.refresh()
+            except Exception as exc:
+                raise ApiError(502, "directory_error", str(exc)) from exc
+            self._send_json(200, {"ok": True, "directory": status})
+            return
         if path == "/api/messages":
             self._handle_message()
             return

@@ -3017,7 +3017,7 @@ function loadAdminExtension() {
   style.id = "adminExtensionStyle";
   document.head.appendChild(style);
   const script = document.createElement("script");
-  script.src = "/admin.js?v=20";
+  script.src = "/admin.js?v=21";
   script.id = "adminExtensionScript";
   document.body.appendChild(script);
 }
