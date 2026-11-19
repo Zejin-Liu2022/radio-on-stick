@@ -38,6 +38,7 @@
 - 插件协议（本地库/开放平台/商业平台）见 `docs/PLUGIN_PROTOCOL.md`
 - NAT 后电台的统一入口 Relay 协议见 `docs/RELAY_PROTOCOL.md`
 - 协议 JSON 示例见 `protocol/v1/`
+- Directory MVP 见 `directory/`；VPS 部署片段见 `deploy/vps/`
 - 校园网络、证书、隧道等私人部署说明见 `docs/PRIVATE_CONFIG.md`
 - `/admin` 复用客户端完整播放/歌词/聊天/点歌布局，并额外提供任意曲目删除、MP3 策略、最大听众/功能开关和留言管理；网络 IP 准入统一由 Nginx 白名单负责
 - 网络准入参考 [Pigman02/radio-on-stick](https://github.com/Pigman02/radio-on-stick)：Nginx 白名单放行本机、Tailscale 和 RFC1918 私网；白名单文件独立保存，升级不覆盖
